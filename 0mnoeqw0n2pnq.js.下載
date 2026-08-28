@@ -1,0 +1,461 @@
+;!function(){try { var e="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof global?global:"undefined"!=typeof window?window:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&((e._debugIds|| (e._debugIds={}))[n]="68323535-ec26-9a89-5cdd-5f6600148e17")}catch(e){}}();
+(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,736372,t=>{"use strict";var e=t.i(276385),i=t.i(15801),o=t.i(255701),a=t.i(195206);t.i(214847);var n=t.i(864300),r=t.i(776065);t.i(174474);var c=t.i(327711),s=t.i(165887),m=t.i(295231),l=t.i(857827),d=t.i(303179),f=t.i(197765);t.s(["AccountItems",0,function({setActiveModal:t,notificationCount:u,hideClui:p,onClose:N}){let g=(0,n.useIntl)(),I=(0,i.useRouter)(),C=(0,f.useSettingsSurface)({disableExposureLog:!0}),x="page"===C.type?(0,l.genericSettingsLocation)(C.scope,"workspaceOverview",{}):null;return(0,e.jsxs)(e.Fragment,{children:[(0,e.jsx)(m.MenuItem,{label:g.formatMessage({id:"components.navMenuSettings",defaultMessage:"Settings"}),icon:(0,e.jsx)(o.default,{}),isDisabled:"loading"===C.type,href:x?.href,onPressStart:t=>{null===x||t.metaKey||t.ctrlKey||t.shiftKey||t.altKey||(0,d.recordSettingsPageOrigin)(I.asPath)},onAction:()=>{"legacyModal"===C.type&&(0,r.updatePathWithQueryParams)({router:I,params:[{mode:"add",key:c.SETTINGS_SHOW_PARAM,value:"true"}]}),N?.()}}),(0,e.jsx)(s.NotificationsItem,{count:u,onAction:()=>{t("notifications")}}),(0,e.jsx)(m.Separator,{}),p?null:(0,e.jsxs)(e.Fragment,{children:[(0,e.jsx)(m.MenuItem,{label:"CLUI",as:"/~/cli",href:"/~/cli",icon:(0,e.jsx)(a.default,{})}),(0,e.jsx)(m.Separator,{})]})]})}])},816498,t=>{"use strict";var e=t.i(351623);t.i(344480);var i=t.i(975473);let o={},a=e.gql`
+    fragment DevCopyUserItemsCurrentUser on CurrentUser {
+  id
+  username
+  email
+}
+    `,n=e.gql`
+    query DevCopyUserItemsCustomer {
+  currentUser {
+    id
+    existingCustomerId
+  }
+}
+    `;t.s(["DevCopyUserItemsCurrentUserFragmentDoc",0,a,"useDevCopyUserItemsCustomerLazyQuery",0,function(t){let e={...o,...t};return i.useLazyQuery(n,e)}])},228290,t=>{t.v({container:"index-module__z1kyYa__container",menu:"index-module__z1kyYa__menu",notificationIndicator:"index-module__z1kyYa__notificationIndicator",popover:"index-module__z1kyYa__popover"})},237671,t=>{"use strict";var e=t.i(276385),i=t.i(389959),o=t.i(532764);t.i(214847);var a=t.i(864300),n=t.i(980224),r=t.i(488299),c=t.i(773222),s=t.i(61732),m=t.i(228290);t.s(["NavMenu",0,function(t){let l=(0,a.useIntl)(),[d,f]=(0,i.useState)(!1),{count:u}=(0,n.default)(),p=l.formatMessage({id:"components.navMenuLabel",defaultMessage:"Menu"});return(0,e.jsxs)(s.View,{clsx:m.default.container,children:[(0,e.jsxs)(c.PopoverTrigger,{isOpen:d,onOpenChange:e=>{f(e),t.onOpenChange?.(e)},label:p,placement:"bottom start",clsx:m.default.popover,offset:2,containerPadding:2,children:[i=>(0,e.jsx)(r.IconButton,{...i,...t.trigger?{"aria-haspopup":void 0,"aria-expanded":void 0,"aria-controls":void 0}:null,alt:t.trigger?.label??p,size:t.triggerSize??28,"data-analytics-id":t.trigger?.analyticsId,tooltipBehavior:"hidden",onClick:e=>{t.onTriggerClick?.(e)!==!1&&i.onClick()},children:t.trigger?.icon??(0,e.jsx)(o.default,{size:16})}),(0,e.jsx)(s.View,{p:4,clsx:m.default.menu,br:6,children:"function"==typeof t.children?t.children(()=>f(!1)):t.children})]}),u>0?(0,e.jsx)(s.View,{clsx:m.default.notificationIndicator}):null]})}])},473833,t=>{"use strict";var e=t.i(526687),i=t.i(68701);t.s(["default",0,function(){let t=(0,i.useUserAgent)();return(0,e.desktopAppUserAgentHostsAtLeast)(t,e.DESKTOP_TAB_BAR_MIN_VERSION)},"useDesktopAppHostsRealHome",0,function(){let t=(0,i.useUserAgent)();return(0,e.desktopAppUserAgentHostsAtLeast)(t,e.DESKTOP_REAL_HOME_MIN_VERSION)}])},405779,t=>{"use strict";var e=t.i(351623);let i=e.gql`
+    fragment NotificationItemCreator on User {
+  id
+  image
+  username
+  fullName
+  url
+}
+    `,o=e.gql`
+    fragment NotificationItemRepliedToPostNotification on RepliedToPostNotification {
+  id
+  text
+  url
+  timeCreated
+  seen
+  creator {
+    id
+    ...NotificationItemCreator
+  }
+}
+    ${i}`,a=e.gql`
+    fragment NotificationItemRepliedToCommentNotification on RepliedToCommentNotification {
+  id
+  text
+  url
+  timeCreated
+  seen
+  creator {
+    id
+    ...NotificationItemCreator
+  }
+}
+    ${i}`,n=e.gql`
+    fragment NotificationItemMentionedInPostNotification on MentionedInPostNotification {
+  id
+  text
+  url
+  timeCreated
+  seen
+  creator {
+    id
+    ...NotificationItemCreator
+  }
+}
+    ${i}`,r=e.gql`
+    fragment NotificationItemMentionedInCommentNotification on MentionedInCommentNotification {
+  id
+  text
+  url
+  timeCreated
+  seen
+  creator {
+    id
+    ...NotificationItemCreator
+  }
+}
+    ${i}`,c=e.gql`
+    fragment NotificationItemAnswerAcceptedNotification on AnswerAcceptedNotification {
+  id
+  text
+  url
+  timeCreated
+  seen
+  creator {
+    id
+    ...NotificationItemCreator
+  }
+}
+    ${i}`,s=e.gql`
+    fragment NotificationItemMultiplayerJoinedEmailNotification on MultiplayerJoinedEmailNotification {
+  id
+  text
+  url
+  timeCreated
+  seen
+  creator {
+    id
+    ...NotificationItemCreator
+  }
+}
+    ${i}`,m=e.gql`
+    fragment NotificationItemMultiplayerJoinedLinkNotification on MultiplayerJoinedLinkNotification {
+  id
+  text
+  url
+  timeCreated
+  seen
+  creator {
+    id
+    ...NotificationItemCreator
+  }
+}
+    ${i}`,l=e.gql`
+    fragment NotificationItemMultiplayerInvitedNotification on MultiplayerInvitedNotification {
+  id
+  text
+  url
+  timeCreated
+  seen
+  creator {
+    id
+    ...NotificationItemCreator
+  }
+}
+    ${i}`,d=e.gql`
+    fragment NotificationItemMultiplayerOverlimitNotification on MultiplayerOverlimitNotification {
+  id
+  text
+  url
+  timeCreated
+  seen
+  creator {
+    id
+    ...NotificationItemCreator
+  }
+}
+    ${i}`,f=e.gql`
+    fragment NotificationItemWarningNotification on WarningNotification {
+  id
+  text
+  url
+  timeCreated
+  seen
+}
+    `,u=e.gql`
+    fragment NotificationItemTeamInvite on TeamInvite {
+  id
+  team {
+    id
+    displayName
+    username
+  }
+}
+    `,p=e.gql`
+    fragment NotificationItemTeamInviteNotification on TeamInviteNotification {
+  id
+  text
+  url
+  timeCreated
+  seen
+  invite {
+    id
+    ...NotificationItemTeamInvite
+  }
+}
+    ${u}`,N=e.gql`
+    fragment NotificationItemTeamOrganizationInvite on TeamOrganizationInvite {
+  id
+  organization {
+    id
+    name
+  }
+}
+    `,g=e.gql`
+    fragment NotificationItemTeamOrganizationInviteNotification on TeamOrganizationInviteNotification {
+  id
+  text
+  url
+  timeCreated
+  seen
+  invite {
+    id
+    ...NotificationItemTeamOrganizationInvite
+  }
+}
+    ${N}`,I=e.gql`
+    fragment NotificationTeamTemplateSubmittedNotification on TeamTemplateSubmittedNotification {
+  id
+  text
+  url
+  timeCreated
+  seen
+  repl {
+    id
+    url
+  }
+}
+    `,C=e.gql`
+    fragment NotificationTeamTemplateReviewedStatusNotification on TeamTemplateReviewedStatusNotification {
+  id
+  text
+  url
+  timeCreated
+  seen
+  repl {
+    id
+    url
+  }
+}
+    `,x=e.gql`
+    fragment NotificationReplCommentCreatedNotification on ReplCommentCreatedNotification {
+  id
+  url
+  timeCreated
+  seen
+  creator {
+    id
+    ...NotificationItemCreator
+  }
+}
+    ${i}`,v=e.gql`
+    fragment NotificationReplCommentReplyCreatedNotification on ReplCommentReplyCreatedNotification {
+  id
+  timeCreated
+  seen
+  creator {
+    id
+    ...NotificationItemCreator
+  }
+}
+    ${i}`,_=e.gql`
+    fragment NotificationReplCommentMentionNotification on ReplCommentMentionNotification {
+  id
+  timeCreated
+  seen
+  creator {
+    id
+    ...NotificationItemCreator
+  }
+}
+    ${i}`,M=e.gql`
+    fragment NotificationItemNewFollower on NewFollowerNotification {
+  id
+  timeCreated
+  seen
+  url
+  creator {
+    ...NotificationItemCreator
+  }
+}
+    ${i}`,y=e.gql`
+    fragment BasicNotificationItemNotification on BasicNotification {
+  id
+  text
+  url
+  timeCreated
+  seen
+  context
+}
+    `,h=e.gql`
+    fragment NotificationItemEgressLimitNotification on EgressLimitNotification {
+  id
+  url
+  timeCreated
+  seen
+  variant
+  limitGib
+  percentage
+}
+    `,R=e.gql`
+    fragment NotificationItemOrgUpgradeRequestReviewedNotification on OrgUpgradeRequestReviewedNotification {
+  id
+  timeCreated
+  seen
+  url
+  creator {
+    ...NotificationItemCreator
+  }
+  isAccepted
+  orgId
+}
+    ${i}`,T=e.gql`
+    fragment NotificationItemIntegrationRequestedNotification on IntegrationRequestedNotification {
+  id
+  timeCreated
+  seen
+  url
+  creator {
+    ...NotificationItemCreator
+  }
+  connectorName
+  message
+}
+    ${i}`,j=e.gql`
+    fragment NotificationItemIntegrationRequestReviewedNotification on IntegrationRequestReviewedNotification {
+  id
+  timeCreated
+  seen
+  url
+  creator {
+    ...NotificationItemCreator
+  }
+  connectorName
+  isApproved
+}
+    ${i}`;t.s(["BasicNotificationItemNotificationFragmentDoc",0,y,"NotificationItemAnswerAcceptedNotificationFragmentDoc",0,c,"NotificationItemEgressLimitNotificationFragmentDoc",0,h,"NotificationItemIntegrationRequestReviewedNotificationFragmentDoc",0,j,"NotificationItemIntegrationRequestedNotificationFragmentDoc",0,T,"NotificationItemMentionedInCommentNotificationFragmentDoc",0,r,"NotificationItemMentionedInPostNotificationFragmentDoc",0,n,"NotificationItemMultiplayerInvitedNotificationFragmentDoc",0,l,"NotificationItemMultiplayerJoinedEmailNotificationFragmentDoc",0,s,"NotificationItemMultiplayerJoinedLinkNotificationFragmentDoc",0,m,"NotificationItemMultiplayerOverlimitNotificationFragmentDoc",0,d,"NotificationItemNewFollowerFragmentDoc",0,M,"NotificationItemOrgUpgradeRequestReviewedNotificationFragmentDoc",0,R,"NotificationItemRepliedToCommentNotificationFragmentDoc",0,a,"NotificationItemRepliedToPostNotificationFragmentDoc",0,o,"NotificationItemTeamInviteNotificationFragmentDoc",0,p,"NotificationItemTeamOrganizationInviteNotificationFragmentDoc",0,g,"NotificationItemWarningNotificationFragmentDoc",0,f,"NotificationReplCommentCreatedNotificationFragmentDoc",0,x,"NotificationReplCommentMentionNotificationFragmentDoc",0,_,"NotificationReplCommentReplyCreatedNotificationFragmentDoc",0,v,"NotificationTeamTemplateReviewedStatusNotificationFragmentDoc",0,C,"NotificationTeamTemplateSubmittedNotificationFragmentDoc",0,I])},987987,t=>{t.v({content:"Item-module__2hGgkG__content",contentContainer:"Item-module__2hGgkG__contentContainer",itemText:"Item-module__2hGgkG__itemText",itemTextNewFollowerWrapper:"Item-module__2hGgkG__itemTextNewFollowerWrapper",userAvatarLink:"Item-module__2hGgkG__userAvatarLink",usernameLink:"Item-module__2hGgkG__usernameLink"})},378099,t=>{"use strict";var e=t.i(276385),i=t.i(36454);t.i(214847);var o=t.i(20397),a=t.i(864300),n=t.i(377498),r=t.i(192915),c=t.i(825419),s=t.i(8047),m=t.i(472499),l=t.i(61732),d=t.i(987987);let f=({seen:t,url:a,as:f,href:u,text:p,timeCreated:N,creator:g,invite:I,orgInvite:C,isLastItem:x=!1,...v})=>{let _,M;return a&&((_=new URL("/"===a[0]?`https://replit.com${a}`:a)).searchParams.set("from","notifications"),M=(a.startsWith("http")&&"https:"===_.protocol?_.protocol+"//"+_.hostname:"")+_.pathname+_.search+_.hash),(0,e.jsx)(n.default,{seen:t,compact:v.compact,isLastItem:x,as:f,href:u||M,children:(0,e.jsxs)("div",{clsx:d.default.contentContainer,children:[g?(0,e.jsx)(i.default,{...(0,r.userLinkProps)(g),clsx:d.default.userAvatarLink,children:(0,e.jsx)(c.Avatar,{size:32,src:g.image,username:g.username,fullName:g.fullName})}):null,(0,e.jsxs)(l.View,{shrink:!0,children:[(0,e.jsxs)("div",{clsx:d.default.itemText,children:[g?(0,e.jsx)(i.default,{...(0,r.userLinkProps)(g),clsx:d.default.usernameLink,children:g.username}):null," ",p,I?(0,e.jsx)(o.FormattedMessage,{id:"notifications.inviteSuffix",defaultMessage:" {teamName}. Click here to join",values:{teamName:I.team.displayName}}):null,C?(0,e.jsx)(o.FormattedMessage,{id:"notifications.orgInviteSuffix",defaultMessage:" the {orgName} workspace. Click here to join",values:{orgName:C.organization.name}}):null]}),(0,e.jsx)(s.Text,{variant:"small",color:"dimmer",multiline:!1,children:(0,e.jsx)(m.Timestamp,{date:N})})]})]})})};t.s(["default",0,({notification:t,isLastItem:l,setAsSeen:u,...p})=>{let N=(0,a.useIntl)();if("ReplCommentCreatedNotification"===t.__typename||"ReplCommentReplyCreatedNotification"===t.__typename||"ReplCommentMentionNotification"===t.__typename){let i={ReplCommentCreatedNotification:N.formatMessage({id:"notifications.commentedOnRepl",defaultMessage:"commented on your repl"}),ReplCommentReplyCreatedNotification:N.formatMessage({id:"notifications.repliedToCommentOnRepl",defaultMessage:"replied to your comment on your repl"}),ReplCommentMentionNotification:N.formatMessage({id:"notifications.mentionedInRepl",defaultMessage:"mentioned you in your repl"})}[t.__typename];return(0,e.jsx)(f,{isLastItem:l,text:i||void 0,seen:u||t.seen,compact:p.compact,timeCreated:t.timeCreated,creator:t.creator||void 0})}if("BasicNotification"===t.__typename)return(0,e.jsx)(f,{isLastItem:l,text:t.text||void 0,seen:u||t.seen,compact:p.compact,timeCreated:t.timeCreated,url:t.url});if("MentionedInPostNotification"===t.__typename)return(0,e.jsx)(f,{isLastItem:l,text:N.formatMessage({id:"notifications.mentionedInPost",defaultMessage:"mentioned you in their post"}),creator:t.creator||void 0,seen:u||t.seen,compact:p.compact,timeCreated:t.timeCreated,url:t.url});if("MentionedInCommentNotification"===t.__typename)return(0,e.jsx)(f,{isLastItem:l,text:N.formatMessage({id:"notifications.mentionedInComment",defaultMessage:"mentioned you in their comment"}),creator:t.creator||void 0,seen:u||t.seen,compact:p.compact,timeCreated:t.timeCreated,url:t.url});if("RepliedToPostNotification"===t.__typename)return(0,e.jsx)(f,{isLastItem:l,text:N.formatMessage({id:"notifications.repliedToPost",defaultMessage:"replied to your post"}),creator:t.creator||void 0,seen:u||t.seen,compact:p.compact,timeCreated:t.timeCreated,url:t.url});if("RepliedToCommentNotification"===t.__typename)return(0,e.jsx)(f,{isLastItem:l,text:N.formatMessage({id:"notifications.repliedToComment",defaultMessage:"replied to your comment"}),creator:t.creator||void 0,seen:u||t.seen,compact:p.compact,timeCreated:t.timeCreated,url:t.url});if("AnswerAcceptedNotification"===t.__typename)return(0,e.jsx)(f,{isLastItem:l,text:N.formatMessage({id:"notifications.answerAccepted",defaultMessage:"accepted your answer (you earned 5 cycles!)"}),creator:t.creator||void 0,seen:u||t.seen,compact:p.compact,timeCreated:t.timeCreated,url:t.url});if("WarningNotification"===t.__typename)return(0,e.jsx)(f,{isLastItem:l,text:N.formatMessage({id:"notifications.warning",defaultMessage:"You have been warned by a moderator.  Click here to learn more."}),seen:u||t.seen,compact:p.compact,timeCreated:t.timeCreated,url:t.url});if("TeamInviteNotification"===t.__typename)return(0,e.jsx)(f,{isLastItem:l,text:N.formatMessage({id:"notifications.invitedToJoin",defaultMessage:"You have been invited to join"}),invite:t.invite||void 0,seen:u||t.seen,compact:p.compact,timeCreated:t.timeCreated,url:t.url});if("TeamOrganizationInviteNotification"===t.__typename)return(0,e.jsx)(f,{isLastItem:l,text:N.formatMessage({id:"notifications.invitedToJoin",defaultMessage:"You have been invited to join"}),orgInvite:t.invite||void 0,seen:u||t.seen,compact:p.compact,timeCreated:t.timeCreated,url:t.url});if("MultiplayerJoinedEmailNotification"===t.__typename||"MultiplayerJoinedLinkNotification"===t.__typename||"MultiplayerInvitedNotification"===t.__typename||"MultiplayerOverlimitNotification"===t.__typename)return(0,e.jsx)(f,{isLastItem:l,text:t.text?t.text.split(" ").slice(1).join(" "):"",creator:t.creator||void 0,seen:u||t.seen,compact:p.compact,timeCreated:t.timeCreated,url:t.url});if("TeamTemplateSubmittedNotification"===t.__typename||"TeamTemplateReviewedStatusNotification"===t.__typename)return(0,e.jsx)(f,{isLastItem:l,text:t.text,seen:u||t.seen,compact:p.compact,timeCreated:t.timeCreated,url:t.repl?.url||t.url});if("NewFollowerNotification"===t.__typename){let a=t.creator?(0,r.userLinkProps)(t.creator):null;return(0,e.jsx)(n.default,{seen:u||t.seen,compact:p.compact,as:a?.as,href:a?.href,isLastItem:l,children:(0,e.jsxs)("div",{clsx:d.default.contentContainer,children:[(0,e.jsx)(c.Avatar,{size:32,src:t.creator?.image??null,username:t.creator?.username??"",fullName:t.creator?.fullName}),(0,e.jsx)("div",{clsx:d.default.content,children:(0,e.jsx)("div",{clsx:d.default.itemTextNewFollowerWrapper,children:(0,e.jsxs)("div",{clsx:d.default.itemText,children:[(0,e.jsxs)("div",{children:[t.creator?(0,e.jsx)(i.default,{...(0,r.userLinkProps)(t.creator),children:t.creator.username}):N.formatMessage({id:"notifications.deletedUser",defaultMessage:"[deleted]"})," ",(0,e.jsx)(o.FormattedMessage,{id:"notifications.startedFollowing",defaultMessage:"started following you"})]}),(0,e.jsx)(s.Text,{variant:"small",color:"dimmer",multiline:!1,children:(0,e.jsx)(m.Timestamp,{date:t.timeCreated})})]})})})]})})}return"OrgUpgradeRequestReviewedNotification"===t.__typename?(0,e.jsx)(f,{creator:t.creator||void 0,isLastItem:l,text:t.isAccepted?N.formatMessage({id:"notifications.upgradeRequestApproved",defaultMessage:"approved your request to join the workspace"}):N.formatMessage({id:"notifications.upgradeRequestRejected",defaultMessage:"rejected your request to join the workspace"}),seen:u||t.seen,compact:p.compact,timeCreated:t.timeCreated,url:t.url}):"EgressLimitNotification"===t.__typename?(0,e.jsx)(f,{creator:void 0,isLastItem:l,text:"egress_reached_limit"===t.variant?N.formatMessage({id:"notifications.egressReachedLimit",defaultMessage:"You have reached your data transfer limit for the month. Your Apps' data transfer is being throttled, and will be shut off. Upgrade your plan or purchase additional data transfer with Cycles to resume normal speeds."}):N.formatMessage({id:"notifications.egressApproachingLimit",defaultMessage:"You have used {percentage}% of your monthly data transfer limit. If you reach the limit, your Apps data transfer will be throttled and eventually shut off. Upgrade your plan or purchase additional data transfer with Cycles to prevent disruptions to your Apps."},{percentage:t.percentage}),seen:u||t.seen,compact:p.compact,timeCreated:t.timeCreated,url:t.url}):"IntegrationRequestedNotification"===t.__typename?(0,e.jsx)(f,{creator:t.creator||void 0,isLastItem:l,text:t.message?N.formatMessage({id:"notifications.integrationRequestedWithMessage",defaultMessage:"has requested the {connectorName} integration: {message}"},{connectorName:t.connectorName,message:t.message}):N.formatMessage({id:"notifications.integrationRequested",defaultMessage:"has requested the {connectorName} integration"},{connectorName:t.connectorName}),seen:u||t.seen,compact:p.compact,timeCreated:t.timeCreated,url:t.url}):"IntegrationRequestReviewedNotification"===t.__typename?(0,e.jsx)(f,{creator:t.creator||void 0,isLastItem:l,text:t.isApproved?N.formatMessage({id:"notifications.integrationRequestApproved",defaultMessage:"approved your request for the {connectorName} integration"},{connectorName:t.connectorName}):N.formatMessage({id:"notifications.integrationRequestDenied",defaultMessage:"denied your request for the {connectorName} integration"},{connectorName:t.connectorName}),seen:u||t.seen,compact:p.compact,timeCreated:t.timeCreated,url:t.url}):null}])},295819,t=>{"use strict";var e=t.i(351623),i=t.i(299020);let o={},a=e.gql`
+    mutation MarkNotificationsAsSeen($ids: [Int!]) {
+  markNotificationsAsSeen(ids: $ids)
+}
+    `;t.s(["useMarkNotificationsAsSeenMutation",0,function(t){let e={...o,...t};return i.useMutation(a,e)}])},237090,t=>{"use strict";var e=t.i(351623),i=t.i(405779),o=t.i(344480);t.i(975473);let a={},n=e.gql`
+    fragment NotificationItems on Notification {
+  ... on BasicNotification {
+    id
+    ...BasicNotificationItemNotification
+  }
+  ... on MentionedInPostNotification {
+    id
+    ...NotificationItemMentionedInPostNotification
+  }
+  ... on RepliedToPostNotification {
+    id
+    ...NotificationItemRepliedToPostNotification
+  }
+  ... on MentionedInCommentNotification {
+    id
+    ...NotificationItemMentionedInCommentNotification
+  }
+  ... on RepliedToCommentNotification {
+    id
+    ...NotificationItemRepliedToCommentNotification
+  }
+  ... on AnswerAcceptedNotification {
+    id
+    ...NotificationItemAnswerAcceptedNotification
+  }
+  ... on MultiplayerInvitedNotification {
+    id
+    ...NotificationItemMultiplayerInvitedNotification
+  }
+  ... on MultiplayerJoinedEmailNotification {
+    id
+    ...NotificationItemMultiplayerJoinedEmailNotification
+  }
+  ... on MultiplayerJoinedLinkNotification {
+    id
+    ...NotificationItemMultiplayerJoinedLinkNotification
+  }
+  ... on MultiplayerOverlimitNotification {
+    id
+    ...NotificationItemMultiplayerOverlimitNotification
+  }
+  ... on WarningNotification {
+    id
+    ...NotificationItemWarningNotification
+  }
+  ... on TeamInviteNotification {
+    id
+    ...NotificationItemTeamInviteNotification
+  }
+  ... on TeamOrganizationInviteNotification {
+    id
+    ...NotificationItemTeamOrganizationInviteNotification
+  }
+  ... on TeamTemplateSubmittedNotification {
+    id
+    ...NotificationTeamTemplateSubmittedNotification
+  }
+  ... on TeamTemplateReviewedStatusNotification {
+    id
+    ...NotificationTeamTemplateReviewedStatusNotification
+  }
+  ... on ReplCommentCreatedNotification {
+    id
+    ...NotificationReplCommentCreatedNotification
+  }
+  ... on ReplCommentReplyCreatedNotification {
+    id
+    ...NotificationReplCommentReplyCreatedNotification
+  }
+  ... on ReplCommentMentionNotification {
+    id
+    ...NotificationReplCommentMentionNotification
+  }
+  ... on NewFollowerNotification {
+    id
+    ...NotificationItemNewFollower
+  }
+  ... on OrgUpgradeRequestReviewedNotification {
+    id
+    ...NotificationItemOrgUpgradeRequestReviewedNotification
+  }
+  ... on EgressLimitNotification {
+    id
+    ...NotificationItemEgressLimitNotification
+  }
+  ... on OrgUpgradeRequestReviewedNotification {
+    id
+    ...NotificationItemOrgUpgradeRequestReviewedNotification
+  }
+  ... on IntegrationRequestedNotification {
+    id
+    ...NotificationItemIntegrationRequestedNotification
+  }
+  ... on IntegrationRequestReviewedNotification {
+    id
+    ...NotificationItemIntegrationRequestReviewedNotification
+  }
+}
+    ${i.BasicNotificationItemNotificationFragmentDoc}
+${i.NotificationItemMentionedInPostNotificationFragmentDoc}
+${i.NotificationItemRepliedToPostNotificationFragmentDoc}
+${i.NotificationItemMentionedInCommentNotificationFragmentDoc}
+${i.NotificationItemRepliedToCommentNotificationFragmentDoc}
+${i.NotificationItemAnswerAcceptedNotificationFragmentDoc}
+${i.NotificationItemMultiplayerInvitedNotificationFragmentDoc}
+${i.NotificationItemMultiplayerJoinedEmailNotificationFragmentDoc}
+${i.NotificationItemMultiplayerJoinedLinkNotificationFragmentDoc}
+${i.NotificationItemMultiplayerOverlimitNotificationFragmentDoc}
+${i.NotificationItemWarningNotificationFragmentDoc}
+${i.NotificationItemTeamInviteNotificationFragmentDoc}
+${i.NotificationItemTeamOrganizationInviteNotificationFragmentDoc}
+${i.NotificationTeamTemplateSubmittedNotificationFragmentDoc}
+${i.NotificationTeamTemplateReviewedStatusNotificationFragmentDoc}
+${i.NotificationReplCommentCreatedNotificationFragmentDoc}
+${i.NotificationReplCommentReplyCreatedNotificationFragmentDoc}
+${i.NotificationReplCommentMentionNotificationFragmentDoc}
+${i.NotificationItemNewFollowerFragmentDoc}
+${i.NotificationItemOrgUpgradeRequestReviewedNotificationFragmentDoc}
+${i.NotificationItemEgressLimitNotificationFragmentDoc}
+${i.NotificationItemIntegrationRequestedNotificationFragmentDoc}
+${i.NotificationItemIntegrationRequestReviewedNotificationFragmentDoc}`,r=e.gql`
+    query notifications($after: String, $count: Int, $seen: Boolean) {
+  currentUser {
+    id
+  }
+  notifications(after: $after, count: $count, seen: $seen) {
+    items {
+      ...NotificationItems
+    }
+    pageInfo {
+      nextCursor
+    }
+  }
+}
+    ${n}`;t.s(["useNotificationsQuery",0,function(t){let e={...a,...t};return o.useQuery(r,e)}])},413325,t=>{t.v({buttonGroupContainer:"List-module__a4KWka__buttonGroupContainer",compact:"List-module__a4KWka__compact",emptyState:"List-module__a4KWka__emptyState",emptyStateContainer:"List-module__a4KWka__emptyStateContainer",list:"List-module__a4KWka__list",loadMoreContainer:"List-module__a4KWka__loadMoreContainer",textCenter:"List-module__a4KWka__textCenter"})},286093,t=>{"use strict";var e=t.i(276385),i=t.i(389959),o=t.i(237090),a=t.i(882708),n=t.i(183035),r=t.i(269848);t.i(214847);var c=t.i(864300),s=t.i(378099),m=t.i(137796),l=t.i(980224),d=t.i(766299),f=t.i(643484),u=t.i(197798),p=t.i(8047),N=t.i(61732),g=t.i(413325);t.s(["default",0,t=>{let I=(0,c.useIntl)(),[C,x]=(0,i.useState)(!0),{count:v}=(0,l.default)(),[_,M]=(0,i.useState)(!1),{data:y,loading:h,fetchMore:R}=(0,o.useNotificationsQuery)({fetchPolicy:"cache-and-network",ssr:!1,notifyOnNetworkStatusChange:!0,variables:{...t.count?{count:t.count}:{},...C?{seen:!1}:{}}}),T=(y?.notifications?.items??[]).filter(t=>"AnnotationNotification"!==t.__typename&&"ThreadNotification"!==t.__typename),[j]=(0,a.useMarkAllNotificationsAsSeenMutation)({onCompleted({markAllNotificationsAsSeen:t}){M(!1),window.replitDesktop?.setNotificationBadgeCount?.(t.notificationCount)},optimisticResponse:{__typename:"RootMutationType",markAllNotificationsAsSeen:{__typename:"CurrentUser",id:y?.currentUser?.id,notificationCount:0}}}),k=(0,d.useIdSeed)();return(0,e.jsxs)(e.Fragment,{children:[(0,e.jsxs)(N.View,{row:!0,gap:16,justify:"space-between",clsx:[g.default.list,{[g.default.compact]:t.compact}],children:[(0,e.jsx)("div",{clsx:[g.default.buttonGroupContainer,{[g.default.compact]:t.compact&&v>0}],children:(0,e.jsxs)(u.ButtonGroup2,{name:k("visibility"),value:C.toString(),onChange:()=>x(!C),row:!0,stretch:!0,children:[(0,e.jsx)(u.ButtonGroup2Item,{id:k("true"),value:"true",text:I.formatMessage({id:"notifications.unread",defaultMessage:"Unread"})}),(0,e.jsx)(u.ButtonGroup2Item,{id:k("false"),value:"false",text:I.formatMessage({id:"notifications.all",defaultMessage:"All"})})]})}),v>0&&(0,e.jsx)(f.Button,{text:_?I.formatMessage({id:"notifications.markingAll",defaultMessage:"Marking all..."}):I.formatMessage({id:"notifications.markAsRead",defaultMessage:"Mark as read"}),disabled:h,iconLeft:(0,e.jsx)(n.default,{}),stretch:!0,onClick:()=>{M(!0),j()}})]}),(0,e.jsxs)(N.View,{children:[!h||y&&y.notifications?null:(0,e.jsx)(N.View,{p:64,align:"center",children:(0,e.jsx)(r.default,{})}),0===T.length&&(0,e.jsx)("div",{clsx:[g.default.emptyStateContainer,{[g.default.compact]:t.compact}],children:(0,e.jsx)(N.View,{clsx:[g.default.emptyState,{[g.default.compact]:t.compact}],children:(0,e.jsx)(p.Text,{variant:"text",color:"dimmer",multiline:!1,clsx:g.default.textCenter,children:C?I.formatMessage({id:"notifications.allCaughtUp",defaultMessage:"You're all caught up!"}):I.formatMessage({id:"notifications.noNotifications",defaultMessage:"No notifications"})})})}),T.length?(0,e.jsxs)(e.Fragment,{children:[T.map((i,o)=>(0,e.jsx)(s.default,{compact:t.compact,notification:i,isLastItem:o===T.length-1,setAsSeen:!0},i.id)),t.markAsSeen&&(0,e.jsx)(m.default,{notificationIds:T.filter(t=>"seen"in t&&!t.seen).map(t=>t.id)})]}):null,t.loadMore&&y?.notifications.pageInfo.nextCursor?(0,e.jsx)("div",{clsx:[g.default.loadMoreContainer,{[g.default.compact]:t.compact}],children:(0,e.jsx)(f.Button,{text:h?I.formatMessage({id:"notifications.loading",defaultMessage:"Loading..."}):I.formatMessage({id:"notifications.loadMore",defaultMessage:"Load more"}),onClick:()=>{h||R({variables:{after:y&&y.notifications&&!C?y.notifications.pageInfo.nextCursor:null},updateQuery:(t,e)=>{if(!e||!e.fetchMoreResult)return t;let{fetchMoreResult:i}=e,o=t?t.notifications.items:[],a={...i};return a.notifications.items=[...o,...i.notifications.items],a}})},disabled:h})}):null]})]})}])},882708,t=>{"use strict";var e=t.i(351623),i=t.i(299020);let o={},a=e.gql`
+    mutation MarkAllNotificationsAsSeen {
+  markAllNotificationsAsSeen {
+    id
+    notificationCount
+  }
+}
+    `;t.s(["useMarkAllNotificationsAsSeenMutation",0,function(t){let e={...o,...t};return i.useMutation(a,e)}])},137796,t=>{"use strict";var e=t.i(389959),i=t.i(295819),o=t.i(980224);t.s(["default",0,t=>{let[a,n]=(0,e.useState)([]),{count:r,setUnreadCount:c}=(0,o.default)(),s=t.notificationIds.filter(t=>-1===a.indexOf(t)),[m,{data:l}]=(0,i.useMarkNotificationsAsSeenMutation)({variables:{ids:s}});return(0,e.useEffect)(()=>{0!==s.length&&(n([...a,...s]),m({variables:{ids:s}}))},[s,m]),(0,e.useEffect)(()=>{if(l?.markNotificationsAsSeen){let t=Math.max(0,r-l.markNotificationsAsSeen);c(t),window.replitDesktop?.setNotificationBadgeCount?.(t)}},[l,c]),null}])},795968,t=>{t.v({content:"NotificationCard-module__5qO-ya__content",indicator:"NotificationCard-module__5qO-ya__indicator",indicatorLink:"NotificationCard-module__5qO-ya__indicatorLink",notificationLink:"NotificationCard-module__5qO-ya__notificationLink",notificationLinkWrapper:"NotificationCard-module__5qO-ya__notificationLinkWrapper",root:"NotificationCard-module__5qO-ya__root"})},377498,t=>{"use strict";var e=t.i(276385),i=t.i(36454),o=t.i(389959),a=t.i(927600),n=t.i(415541),r=t.i(709485),c=t.i(89148),s=t.i(795968);let m=({condition:t,children:e,wrap:i})=>t?(0,o.cloneElement)(i(e)):e;t.s(["default",0,function({children:t,seen:o,href:l,as:d,isLastItem:f=!1}){let u=!!(l||d);return(0,e.jsx)(m,{condition:u,wrap:t=>(0,e.jsxs)("div",{clsx:s.default.notificationLinkWrapper,children:[d&&l?(0,e.jsx)(i.default,{as:d,href:l,clsx:s.default.notificationLink,children:t}):null,!d&&l&&"object"==typeof l?(0,e.jsx)(i.default,{href:l,clsx:s.default.notificationLink,children:t}):null,d||"string"!=typeof l?null:(0,e.jsx)("a",{clsx:s.default.notificationLink,href:l,children:t})]}),children:(0,e.jsxs)("div",{onClick:()=>{u&&(0,n.track)(r.events.NOTIFICATION_ITEM_CLICKED,{seen:o})},clsx:s.default.root,"data-has-link":u,"data-last-item":f,children:[(0,e.jsx)("div",{clsx:s.default.content,children:t}),u?(0,e.jsxs)("div",{clsx:s.default.indicatorLink,children:[!o&&(0,e.jsx)("div",{clsx:s.default.indicator}),(0,e.jsx)(a.default,{color:c.tokens.foregroundDimmest})]}):null]})})}])},762288,t=>{"use strict";var e=t.i(351623);let i=e.gql`
+    fragment UserLinkUser on User {
+  id
+  url
+  username
+}
+    `,o=e.gql`
+    fragment UserLinkCurrentUser on CurrentUser {
+  id
+  url
+  username
+}
+    `;t.s(["UserLinkCurrentUserFragmentDoc",0,o,"UserLinkUserFragmentDoc",0,i])}]);
+
+//# debugId=68323535-ec26-9a89-5cdd-5f6600148e17
+//# sourceMappingURL=35mt11v_slmu_.js.map
