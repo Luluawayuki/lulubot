@@ -1,11 +1,39 @@
+import json
 import logging
+import os
 import discord
 from discord import app_commands
 from discord.ext import commands
 
 log = logging.getLogger(__name__)
 
-# 假設 _welcome_configs 與 _save_welcome_config 已在外部定義
+# JSON 設定檔路徑
+CONFIG_FILE = "welcome_config.json"
+
+
+# 載入設定檔
+def _load_welcome_configs():
+    if os.path.exists(CONFIG_FILE):
+        try:
+            with open(CONFIG_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            log.error(f"讀取歡迎設定檔失敗: {e}")
+            return {}
+    return {}
+
+
+# 儲存設定檔
+def _save_welcome_config():
+    try:
+        with open(CONFIG_FILE, "w", encoding="utf-8") as f:
+            json.dump(_welcome_configs, f, ensure_ascii=False, indent=4)
+    except Exception as e:
+        log.error(f"儲存歡迎設定檔失敗: {e}")
+
+
+# 初始化全域變數
+_welcome_configs = _load_welcome_configs()
 
 
 class WelcomeCog(commands.Cog):
@@ -50,7 +78,9 @@ class WelcomeCog(commands.Cog):
 
         # 取得機器人在該伺服器的成員物件
         me = guild.me or guild.get_member(self.bot.user.id)
-        permissions = channel.permissions_for(me) if me is not None else None
+        permissions = (
+            channel.permissions_for(me) if me is not None else None
+        )
 
         if (
             permissions is None
@@ -66,7 +96,7 @@ class WelcomeCog(commands.Cog):
         content = str(config["content"]).strip()
         embed = discord.Embed(
             description=(
-                f"<a:__:1162403933646487583> **歡迎 {member.mention} 小天使前來！**\n\n{content}"
+                f"**歡迎 {member.mention} 小天使前來！**\n\n{content}"
             ),
             color=discord.Color.from_rgb(126, 87, 194),
         )
@@ -131,9 +161,10 @@ class WelcomeCog(commands.Cog):
             )
             return
 
-        # 修復：移除重複的 me = guild.me 並加上安全備援
         me = guild.me or guild.get_member(self.bot.user.id)
-        permissions = 頻道.permissions_for(me) if me is not None else None
+        permissions = (
+            頻道.permissions_for(me) if me is not None else None
+        )
 
         if (
             permissions is None
@@ -194,3 +225,8 @@ class WelcomeCog(commands.Cog):
             "已取消歡迎訊息，之後有新成員加入時不會再自動發送。",
             ephemeral=True,
         )
+
+
+# 關鍵：加上這段才可以讓 main.py 正確載入！
+async def setup(bot: commands.Bot):
+    await bot.add_cog(WelcomeCog(bot))
