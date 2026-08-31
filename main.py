@@ -33,7 +33,7 @@ async def load_extensions():
     """載入你的 Cog 檔案"""
     # 假設你的 Cog 檔名叫做 welcome.py，這裡就填 "welcome"
     # 如果你的 Cog 直接寫在 main.py 裡面，就不需要此步驟
-    await bot.load_extension("welcome")
+    await bot.load_extension("cogs.welcome")
     await bot.load_extension("roles")
 
 
