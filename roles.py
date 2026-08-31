@@ -1,5 +1,3 @@
-"""身份組自助領取系統（動態設定版）。"""
-
 import json
 import logging
 import os
@@ -9,207 +7,226 @@ from discord.ext import commands
 
 log = logging.getLogger(__name__)
 
-# 🔒 請在此處填入你個人的 Discord ID (數字)
-ONLY_USER_ID = 123456789012345678  # 👈 替換成你的 ID
-
-CONFIG_FILE = "role_buttons.json"
+# JSON 設定檔路徑
+CONFIG_FILE = "welcome_config.json"
 
 
-# ── 設定檔讀寫 ─────────────────────────────────────────────────────────────
-def load_role_buttons() -> list:
+# 載入設定檔
+def _load_welcome_configs():
     if os.path.exists(CONFIG_FILE):
         try:
             with open(CONFIG_FILE, "r", encoding="utf-8") as f:
                 return json.load(f)
         except Exception as e:
-            log.error(f"讀取身分組設定檔失敗: {e}")
-            return []
-    return []
+            log.error(f"讀取歡迎設定檔失敗: {e}")
+            return {}
+    return {}
 
 
-def save_role_buttons(buttons_data: list):
+# 儲存設定檔
+def _save_welcome_config():
     try:
         with open(CONFIG_FILE, "w", encoding="utf-8") as f:
-            json.dump(buttons_data, f, ensure_ascii=False, indent=4)
+            json.dump(_welcome_configs, f, ensure_ascii=False, indent=4)
     except Exception as e:
-        log.error(f"儲存身分組設定檔失敗: {e}")
+        log.error(f"儲存歡迎設定檔失敗: {e}")
 
 
-# ── 按鈕與視窗 ─────────────────────────────────────────────────────────────
-class RoleToggleButton(discord.ui.Button):
-
-    def __init__(self, label: str, role_id: int, custom_id: str):
-        super().__init__(
-            label=label,
-            style=discord.ButtonStyle.secondary,
-            custom_id=custom_id,
-        )
-        self.role_id = role_id
-
-    async def callback(self, interaction: discord.Interaction):
-        member = interaction.user
-        if not isinstance(member, discord.Member):
-            await interaction.response.send_message(
-                "無法識別你的身份。", ephemeral=True
-            )
-            return
-
-        role = interaction.guild.get_role(self.role_id)
-        if role is None:
-            await interaction.response.send_message(
-                "找不到該身份組，請聯絡管理員確認身份組設定。",
-                ephemeral=True,
-            )
-            return
-
-        try:
-            if role in member.roles:
-                await member.remove_roles(role, reason="自助身份組：玩家移除")
-                await interaction.response.send_message(
-                    f"✅ 已移除身份組 **{role.name}**！", ephemeral=True
-                )
-            else:
-                await member.add_roles(role, reason="自助身份組：玩家領取")
-                await interaction.response.send_message(
-                    f"🎉 已領取身份組 **{role.name}**！", ephemeral=True
-                )
-        except discord.Forbidden:
-            await interaction.response.send_message(
-                "⚠️ 機器人權限不足！請確保機器人的身分組順位高於要發放的身分組，且擁有「管理身分組」權限。",
-                ephemeral=True,
-            )
+# 初始化全域變數
+_welcome_configs = _load_welcome_configs()
 
 
-class RoleSelectView(discord.ui.View):
-
-    def __init__(self):
-        super().__init__(timeout=None)
-        buttons_data = load_role_buttons()
-        for btn in buttons_data:
-            self.add_item(
-                RoleToggleButton(
-                    label=btn["label"],
-                    role_id=btn["role_id"],
-                    custom_id=btn["custom_id"],
-                )
-            )
-
-
-# ── Cog ───────────────────────────────────────────────────────────────────────
-class Roles(commands.Cog):
+class WelcomeCog(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    async def cog_load(self):
-        self.bot.add_view(RoleSelectView())
+    @commands.Cog.listener()
+    async def on_member_join(self, member: discord.Member):
+        """新成員加入時，在已設定的頻道發送自訂歡迎 Embed。"""
+        guild = member.guild
+        log.info(
+            "收到成員加入事件：%s（bot=%s，伺服器=%s）",
+            member,
+            member.bot,
+            guild.id,
+        )
 
-    def check_owner(self, interaction: discord.Interaction) -> bool:
-        """檢查是否為指定唯一使用者"""
-        return interaction.user.id == ONLY_USER_ID
-
-    @app_commands.command(
-        name="新增身分組按鈕", description="新增一個自助領取的身分組（僅限指定擁有者）"
-    )
-    @app_commands.describe(
-        按鈕顯示名稱="按鈕上要顯示的文字",
-        身分組="選擇要讓玩家領取的身分組",
-    )
-    async def add_role_button(
-        self,
-        interaction: discord.Interaction,
-        按鈕顯示名稱: str,
-        身分組: discord.Role,
-    ):
-        if not self.check_owner(interaction):
-            await interaction.response.send_message(
-                "❌ 你沒有使用此指令的權限。", ephemeral=True
-            )
+        config = _welcome_configs.get(str(guild.id))
+        if config is None:
+            log.info("伺服器 %s 尚未設定歡迎訊息。", guild.id)
             return
 
-        buttons_data = load_role_buttons()
-        if len(buttons_data) >= 25:
-            await interaction.response.send_message(
-                "⚠️ 一張卡片最多只能放 25 個按鈕！", ephemeral=True
-            )
-            return
+        channel_id = int(config["channel_id"])
+        channel = guild.get_channel(channel_id)
 
-        custom_id = f"role_toggle_{身分組.id}"
-
-        # 避免重複新增相同的身分組按鈕
-        for btn in buttons_data:
-            if btn["role_id"] == 身分組.id:
-                btn["label"] = 按鈕顯示名稱  # 更新名稱
-                save_role_buttons(buttons_data)
-                await interaction.response.send_message(
-                    f"✅ 已更新身分組 {身分組.mention} 的按鈕名稱為 **{按鈕顯示名稱}**！",
-                    ephemeral=True,
+        if channel is None:
+            try:
+                channel = await guild.fetch_channel(channel_id)
+            except (
+                discord.NotFound,
+                discord.Forbidden,
+                discord.HTTPException,
+            ):
+                log.warning(
+                    "找不到伺服器 %s 的歡迎頻道 %s。", guild.id, channel_id
                 )
                 return
 
-        buttons_data.append(
-            {
-                "label": 按鈕顯示名稱,
-                "role_id": 身分組.id,
-                "custom_id": custom_id,
-            }
-        )
-        save_role_buttons(buttons_data)
+        if not isinstance(channel, discord.TextChannel):
+            return
 
-        # 重新註冊 View
-        self.bot.add_view(RoleSelectView())
-
-        await interaction.response.send_message(
-            f"✅ 成功新增按鈕：**{按鈕顯示名稱}**（對應身分組：{身分組.mention}）\n"
-            f"目前已有 {len(buttons_data)} 個按鈕。可以使用 `/選擇身份組` 發送卡片。",
-            ephemeral=True,
+        # 取得機器人在該伺服器的成員物件
+        me = guild.me or guild.get_member(self.bot.user.id)
+        permissions = (
+            channel.permissions_for(me) if me is not None else None
         )
 
-    @app_commands.command(
-        name="清空身分組按鈕", description="清空所有已設定的身分組按鈕（僅限指定擁有者）"
-    )
-    async def clear_role_buttons(self, interaction: discord.Interaction):
-        if not self.check_owner(interaction):
-            await interaction.response.send_message(
-                "❌ 你沒有使用此指令的權限。", ephemeral=True
+        if (
+            permissions is None
+            or not permissions.send_messages
+            or not permissions.embed_links
+        ):
+            log.warning(
+                "缺少權限，無法在 #%s 發送歡迎 Embed（需要發送訊息與嵌入連結）。",
+                channel.name,
             )
             return
 
-        save_role_buttons([])
-        await interaction.response.send_message(
-            "🗑️ 已成功清空所有身分組按鈕設定！", ephemeral=True
+        content = str(config["content"]).strip()
+        embed = discord.Embed(
+            description=(
+                f"**歡迎 {member.mention} 小天使前來！**\n\n{content}"
+            ),
+            color=discord.Color.from_rgb(126, 87, 194),
+        )
+        embed.set_author(
+            name=f"{member.display_name} 加入了伺服器",
+            icon_url=member.display_avatar.url,
         )
 
-    @app_commands.command(
-        name="選擇身份組", description="發送身份組自助領取面板（僅限指定擁有者）"
-    )
-    async def 選擇身份組(self, interaction: discord.Interaction):
-        if not self.check_owner(interaction):
-            await interaction.response.send_message(
-                "❌ 你沒有使用此指令的權限。", ephemeral=True
+        try:
+            await channel.send(
+                embed=embed,
+                allowed_mentions=discord.AllowedMentions(users=[member]),
             )
-            return
+        except discord.HTTPException as exc:
+            log.error("無法發送新成員歡迎訊息：%s", exc)
 
-        buttons_data = load_role_buttons()
-        if not buttons_data:
+    @app_commands.command(
+        name="設定歡迎", description="設定歡迎頻道與自訂歡迎內容。"
+    )
+    @app_commands.default_permissions(manage_guild=True)
+    @app_commands.describe(
+        頻道="新成員加入時要發送歡迎訊息的文字頻道",
+        內容="歡迎訊息內容，會接在開頭的玩家 mention 後面",
+    )
+    async def 設定歡迎(
+        self,
+        interaction: discord.Interaction,
+        頻道: discord.TextChannel,
+        內容: str,
+    ):
+        guild = interaction.guild
+        if guild is None:
             await interaction.response.send_message(
-                "⚠️ 目前尚未新增任何身分組按鈕！請先使用 `/新增身分組按鈕` 設定。",
+                "這個指令只能在伺服器內使用。",
                 ephemeral=True,
             )
             return
 
-        embed = discord.Embed(
-            title="🎀 身份組自助領取",
-            description=(
-                "點擊下方按鈕即可領取對應身份組。\n"
-                "若已持有該身份組，再次點擊即可**移除**。"
-            ),
-            color=discord.Color.from_str("#e0cbd2"),
+        user = interaction.user
+        if not isinstance(user, discord.Member) or not (
+            user.guild_permissions.manage_guild
+            or user.guild_permissions.administrator
+        ):
+            await interaction.response.send_message(
+                "只有擁有管理伺服器權限的人可以設定歡迎頻道。",
+                ephemeral=True,
+            )
+            return
+
+        content = 內容.strip()
+        if not content:
+            await interaction.response.send_message(
+                "歡迎內容不能是空白。",
+                ephemeral=True,
+            )
+            return
+
+        if len(content) > 3800:
+            await interaction.response.send_message(
+                "歡迎內容太長了，請控制在 3800 字以內。",
+                ephemeral=True,
+            )
+            return
+
+        me = guild.me or guild.get_member(self.bot.user.id)
+        permissions = (
+            頻道.permissions_for(me) if me is not None else None
         )
+
+        if (
+            permissions is None
+            or not permissions.send_messages
+            or not permissions.embed_links
+        ):
+            await interaction.response.send_message(
+                f"我沒有 {頻道.mention} 的「發送訊息」或「嵌入連結」權限，請先調整頻道權限。",
+                ephemeral=True,
+            )
+            return
+
+        _welcome_configs[str(guild.id)] = {
+            "channel_id": 頻道.id,
+            "content": content,
+        }
+        _save_welcome_config()
+
         await interaction.response.send_message(
-            embed=embed, view=RoleSelectView()
+            f"已設定歡迎頻道為 {頻道.mention}，並更新歡迎內容。\n"
+            "新成員加入時會以 Embed 卡片發送，開頭會自動 mention 該玩家。",
+            ephemeral=True,
+        )
+
+    @app_commands.command(
+        name="取消歡迎", description="取消新成員歡迎訊息。"
+    )
+    @app_commands.default_permissions(manage_guild=True)
+    async def 取消歡迎(self, interaction: discord.Interaction):
+        guild = interaction.guild
+        if guild is None:
+            await interaction.response.send_message(
+                "這個指令只能在伺服器內使用。",
+                ephemeral=True,
+            )
+            return
+
+        user = interaction.user
+        if not isinstance(user, discord.Member) or not (
+            user.guild_permissions.manage_guild
+            or user.guild_permissions.administrator
+        ):
+            await interaction.response.send_message(
+                "只有擁有管理伺服器權限的人可以取消歡迎訊息。",
+                ephemeral=True,
+            )
+            return
+
+        if _welcome_configs.pop(str(guild.id), None) is None:
+            await interaction.response.send_message(
+                "目前沒有設定歡迎頻道。",
+                ephemeral=True,
+            )
+            return
+
+        _save_welcome_config()
+        await interaction.response.send_message(
+            "已取消歡迎訊息，之後有新成員加入時不會再自動發送。",
+            ephemeral=True,
         )
 
 
+# 關鍵：加上這段才可以讓 main.py 正確載入！
 async def setup(bot: commands.Bot):
-    await bot.add_cog(Roles(bot))
+    await bot.add_cog(WelcomeCog(bot))
