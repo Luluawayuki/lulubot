@@ -34,17 +34,17 @@ async def load_extensions():
     # 假設你的 Cog 檔名叫做 welcome.py，這裡就填 "welcome"
     # 如果你的 Cog 直接寫在 main.py 裡面，就不需要此步驟
     await bot.load_extension("welcome")
+    await bot.load_extension("roles")
 
 
 async def main():
     async with bot:
-        # 如果有拆分 Cog 檔案再取消註解下一行：
-        # await load_extensions()
+        # 載入 welcome.pyCog 模組
+        await bot.load_extension("welcome")
+        await bot.load_extension("roles")
 
-        # 貼上你的 Discord Bot Token
-        TOKEN = "88a977f8593c4a8cdd12cd6b48e5da82a750b06cf47b547236ae43e9e0f0677a"
+        TOKEN = "MTU0MjI2Mzc0NjgwNDcxMTU0NQ.GdkLZm.CSaVZiPzgqbzs6CZQb1DRA58raLi3sOl-zz02A"
         await bot.start(TOKEN)
-
 
 if __name__ == "__main__":
     asyncio.run(main())
