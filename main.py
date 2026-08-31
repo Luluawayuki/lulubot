@@ -40,7 +40,7 @@ async def load_extensions():
 async def main():
     async with bot:
         # 載入 welcome.pyCog 模組
-        await bot.load_extension("welcome")
+        # await bot.load_extension("welcome")
         await bot.load_extension("roles")
 
         TOKEN = os.getenv("DISCORD_TOKEN")
